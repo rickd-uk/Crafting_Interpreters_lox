@@ -43,15 +43,17 @@ public class GenerateAst {
       "Unary    : Token operator, Expr right"
 */
 //> Statements and State var-expr
-                "Unary    : Token operator, Expr right",
-                "Variable : Token name"
+                "Unary      :   Token operator, Expr right",
+                "Variable   :   Token name"
 //< Statements and State var-expr
         ));
 //> Statements and State stmt-ast
 
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Expression         :   Expr expression",
-                "Print              :   Expr expression"));
+                "Print              :   Expr expression",
+                "Var                :   Token name, Expr initializer"
+                ));
     }
     //> define-ast
     private static void defineAst(
