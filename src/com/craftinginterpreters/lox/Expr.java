@@ -17,6 +17,8 @@ abstract class Expr {
     R visitThisExpr(This expr);
     R visitUnaryExpr(Unary expr);
     R visitVariableExpr(Variable expr);
+
+    Object visitBinary(Binary expr);
   }
 
   // Nested Expr classes here...
