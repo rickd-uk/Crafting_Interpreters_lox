@@ -1,6 +1,8 @@
 package com.craftinginterpreters.lox;
 
-public class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
+
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
    @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
@@ -27,14 +29,17 @@ public class Interpreter implements Expr.Visitor<Object> {
         return null;
     }
 
-    void interpret(Expr expression) {
+    void interpret(List<Stmt> statements) {
        try {
-           Object value = evaluate(expression);
-           System.out.println(stringify(value));
+          for (Stmt statement : statements) {
+              execute(statement);
+          }
        } catch (RuntimeError error) {
             Lox.runtimeError(error);
        }
     }
+
+
 
     @Override
    public Object visitUnaryExpr(Expr.Unary expr) {
@@ -106,6 +111,58 @@ public class Interpreter implements Expr.Visitor<Object> {
        return expr.accept(this);
    }
 
+   private void execute(Stmt stmt) {
+       stmt.accept(this);
+   }
+
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        return null;
+    }
+
+    @Override
+    public Void visitClassStmt(Stmt.Class stmt) {
+        return null;
+    }
+
+    @Override
+   public Void visitExpressionStmt(Stmt.Expression stmt) {
+       evaluate(stmt.expression);
+       return null;
+   }
+
+    @Override
+    public Void visitFunctionStmt(Stmt.Function stmt) {
+        return null;
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        return null;
+    }
+
+    @Override
+   public Void visitPrintStmt(Stmt.Print stmt) {
+       Object value = evaluate(stmt.expression);
+       System.out.println(stringify(value));
+       return null;
+   }
+
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+        return null;
+    }
+
+    @Override
+    public Void visitVarStmt(Stmt.Var stmt) {
+        return null;
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) {
+        return null;
+    }
+
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
         return null;
@@ -153,12 +210,13 @@ public class Interpreter implements Expr.Visitor<Object> {
                     return stringify(left) + stringify(right);
                 }
 
-
-
-                throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings");
+                //throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings");
             }
             case SLASH -> {
                 checkNumberOperands(expr.operator, left, right);
+                if (right.equals(0)) {
+                    throw new RuntimeError(expr.operator, "Cannot divide by 0!");
+                }
                 return (double) left / (double) right;
             }
             case STAR -> {

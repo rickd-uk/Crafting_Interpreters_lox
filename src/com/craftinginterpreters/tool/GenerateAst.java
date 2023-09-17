@@ -50,44 +50,8 @@ public class GenerateAst {
 //> Statements and State stmt-ast
 
         defineAst(outputDir, "Stmt", Arrays.asList(
-//> block-ast
-                "Block      : List<Stmt> statements",
-//< block-ast
-/* Classes class-ast < Inheritance superclass-ast
-      "Class      : Token name, List<Stmt.Function> methods",
-*/
-//> Inheritance superclass-ast
-                "Class      : Token name, Expr.Variable superclass," +
-                        " List<Stmt.Function> methods",
-//< Inheritance superclass-ast
-                "Expression : Expr expression",
-//> Functions function-ast
-                "Function   : Token name, List<Token> params," +
-                        " List<Stmt> body",
-//< Functions function-ast
-//> Control Flow if-ast
-                "If         : Expr condition, Stmt thenBranch," +
-                        " Stmt elseBranch",
-//< Control Flow if-ast
-/* Statements and State stmt-ast < Statements and State var-stmt-ast
-      "Print      : Expr expression"
-*/
-//> var-stmt-ast
-                "Print      : Expr expression",
-//< var-stmt-ast
-//> Functions return-ast
-                "Return     : Token keyword, Expr value",
-//< Functions return-ast
-/* Statements and State var-stmt-ast < Control Flow while-ast
-      "Var        : Token name, Expr initializer"
-*/
-//> Control Flow while-ast
-                "Var        : Token name, Expr initializer",
-                "While      : Expr condition, Stmt body"
-//< Control Flow while-ast
-        ));
-//< Statements and State stmt-ast
-//< call-define-ast
+                "Expression         :   Expr expression",
+                "Print              :   Expr expression"));
     }
     //> define-ast
     private static void defineAst(
