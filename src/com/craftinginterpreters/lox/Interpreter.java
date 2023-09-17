@@ -118,8 +118,26 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
        stmt.accept(this);
    }
 
+   // This new method executes a list of statements in the context of a given
+   //environment.
+   void executeBlock(List<Stmt> statements, Environment environment) {
+       Environment previous = this.environment;
+       try {
+           this.environment = environment;
+
+           for (Stmt statement : statements) {
+               execute(statement);
+           }
+           // As is always good practice in Java, it restores the previous environment
+           //using a finally clause. That way it gets restored even if an exception is thrown.
+       } finally {
+           this.environment = previous;
+       }
+   }
+
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment((environment)));
         return null;
     }
 
