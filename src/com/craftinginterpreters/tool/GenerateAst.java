@@ -13,41 +13,35 @@ public class GenerateAst {
             System.exit(64);
         }
         String outputDir = args[0];
-//> call-define-ast
+
         defineAst(outputDir, "Expr", Arrays.asList(
-//> Statements and State assign-expr
+
                 "Assign   : Token name, Expr value",
-//< Statements and State assign-expr
+
                 "Binary   : Expr left, Token operator, Expr right",
-//> Functions call-expr
+
                 "Call     : Expr callee, Token paren, List<Expr> arguments",
-//< Functions call-expr
-//> Classes get-ast
+
                 "Get      : Expr object, Token name",
-//< Classes get-ast
+
                 "Grouping : Expr expression",
                 "Literal  : Object value",
-//> Control Flow logical-ast
+
                 "Logical  : Expr left, Token operator, Expr right",
-//< Control Flow logical-ast
-//> Classes set-ast
+
+
                 "Set      : Expr object, Token name, Expr value",
-//< Classes set-ast
-//> Inheritance super-expr
+
+
                 "Super    : Token keyword, Token method",
-//< Inheritance super-expr
-//> Classes this-ast
+
                 "This     : Token keyword",
-//< Classes this-ast
-/* Representing Code call-define-ast < Statements and State var-expr
-      "Unary    : Token operator, Expr right"
-*/
-//> Statements and State var-expr
+
                 "Unary      :   Token operator, Expr right",
                 "Variable   :   Token name"
-//< Statements and State var-expr
+
         ));
-//> Statements and State stmt-ast
+
 
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Expression         :   Expr expression",
