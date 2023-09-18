@@ -13,7 +13,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitLogicalExpr(Expr.Logical expr) {
-        return null;
+        // We look at its value to see if we can short-circuit. If not, and only then, do we evaluate the
+        //  right operand
+       Object left = evaluate(expr.left);
+
+       if (expr.operator.type == TokenType.OR) {
+           if (isTruthy(left)) return left;
+       } else {
+           if (!isTruthy(left)) return left;
+       }
+        return evaluate(expr.right);
     }
 
     @Override
@@ -157,8 +166,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    // The interpreter implementation is a thin wrapper around the self-same Java
+    //code. It evaluates the condition. If truthy, it executes the then branch.
+    //Otherwise, if there is an else branch, it executes that.
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
+        if (isTruthy(evaluate((stmt.condition)))) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
         return null;
     }
 
