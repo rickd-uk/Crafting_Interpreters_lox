@@ -13,44 +13,81 @@ public class GenerateAst {
             System.exit(64);
         }
         String outputDir = args[0];
-
+//> call-define-ast
         defineAst(outputDir, "Expr", Arrays.asList(
-
+//> Statements and State assign-expr
                 "Assign   : Token name, Expr value",
-
+//< Statements and State assign-expr
                 "Binary   : Expr left, Token operator, Expr right",
-
+//> Functions call-expr
                 "Call     : Expr callee, Token paren, List<Expr> arguments",
-
+//< Functions call-expr
+//> Classes get-ast
                 "Get      : Expr object, Token name",
-
+//< Classes get-ast
                 "Grouping : Expr expression",
                 "Literal  : Object value",
-
+//> Control Flow logical-ast
                 "Logical  : Expr left, Token operator, Expr right",
-
-
+//< Control Flow logical-ast
+//> Classes set-ast
                 "Set      : Expr object, Token name, Expr value",
-
-
+//< Classes set-ast
+//> Inheritance super-expr
                 "Super    : Token keyword, Token method",
-
+//< Inheritance super-expr
+//> Classes this-ast
                 "This     : Token keyword",
-
-                "Unary      :   Token operator, Expr right",
-                "Variable   :   Token name"
-
+//< Classes this-ast
+/* Representing Code call-define-ast < Statements and State var-expr
+      "Unary    : Token operator, Expr right"
+*/
+//> Statements and State var-expr
+                "Unary    : Token operator, Expr right",
+                "Variable : Token name"
+//< Statements and State var-expr
         ));
-
+//> Statements and State stmt-ast
 
         defineAst(outputDir, "Stmt", Arrays.asList(
-                "Block              :   List<Stmt> statements",
-                "Expression         :   Expr expression",
-                "If                 :   Expr condition, Stmt thenBranch," +
-                                        " Stmt elseBranch",
-                "Print              :   Expr expression",
-                "Var                :   Token name, Expr initializer"
-                ));
+//> block-ast
+                "Block      : List<Stmt> statements",
+//< block-ast
+/* Classes class-ast < Inheritance superclass-ast
+      "Class      : Token name, List<Stmt.Function> methods",
+*/
+//> Inheritance superclass-ast
+                "Class      : Token name, Expr.Variable superclass," +
+                        " List<Stmt.Function> methods",
+//< Inheritance superclass-ast
+                "Expression : Expr expression",
+//> Functions function-ast
+                "Function   : Token name, List<Token> params," +
+                        " List<Stmt> body",
+//< Functions function-ast
+//> Control Flow if-ast
+                "If         : Expr condition, Stmt thenBranch," +
+                        " Stmt elseBranch",
+//< Control Flow if-ast
+/* Statements and State stmt-ast < Statements and State var-stmt-ast
+      "Print      : Expr expression"
+*/
+//> var-stmt-ast
+                "Print      : Expr expression",
+//< var-stmt-ast
+//> Functions return-ast
+                "Return     : Token keyword, Expr value",
+//< Functions return-ast
+/* Statements and State var-stmt-ast < Control Flow while-ast
+      "Var        : Token name, Expr initializer"
+*/
+//> Control Flow while-ast
+                "Var        : Token name, Expr initializer",
+                "While      : Expr condition, Stmt body"
+//< Control Flow while-ast
+        ));
+//< Statements and State stmt-ast
+//< call-define-ast
     }
     //> define-ast
     private static void defineAst(
@@ -168,6 +205,36 @@ public class GenerateAst {
                 baseName.toLowerCase() + "-" + className.toLowerCase());
 //< omit
     }
+    //< define-type
+//> pastry-visitor
+    interface PastryVisitor {
+        void visitBeignet(Beignet beignet); // [overload]
+        void visitCruller(Cruller cruller);
+    }
+    //< pastry-visitor
+//> pastries
+    abstract class Pastry {
+        //> pastry-accept
+        abstract void accept(PastryVisitor visitor);
+//< pastry-accept
+    }
 
+    class Beignet extends Pastry {
+        //> beignet-accept
+        @Override
+        void accept(PastryVisitor visitor) {
+            visitor.visitBeignet(this);
+        }
+//< beignet-accept
+    }
+
+    class Cruller extends Pastry {
+        //> cruller-accept
+        @Override
+        void accept(PastryVisitor visitor) {
+            visitor.visitCruller(this);
+        }
+//< cruller-accept
+    }
 //< pastries
 }
