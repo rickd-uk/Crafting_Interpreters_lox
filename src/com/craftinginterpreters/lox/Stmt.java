@@ -14,7 +14,6 @@ abstract class Stmt {
     R visitReturnStmt(Return stmt);
     R visitVarStmt(Var stmt);
     R visitWhileStmt(While stmt);
-    R visitBreakStmt(Break stmt);
   }
 
   // Nested Stmt classes here...
@@ -31,7 +30,7 @@ abstract class Stmt {
 
     final List<Stmt> statements;
   }
-  //< stmt-block
+//< stmt-block
 //> stmt-class
   static class Class extends Stmt {
     Class(Token name,
@@ -51,7 +50,7 @@ abstract class Stmt {
     final Expr.Variable superclass;
     final List<Stmt.Function> methods;
   }
-  //< stmt-class
+//< stmt-class
 //> stmt-expression
   static class Expression extends Stmt {
     Expression(Expr expression) {
@@ -65,7 +64,7 @@ abstract class Stmt {
 
     final Expr expression;
   }
-  //< stmt-expression
+//< stmt-expression
 //> stmt-function
   static class Function extends Stmt {
     Function(Token name, List<Token> params, List<Stmt> body) {
@@ -83,7 +82,7 @@ abstract class Stmt {
     final List<Token> params;
     final List<Stmt> body;
   }
-  //< stmt-function
+//< stmt-function
 //> stmt-if
   static class If extends Stmt {
     If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
@@ -101,7 +100,7 @@ abstract class Stmt {
     final Stmt thenBranch;
     final Stmt elseBranch;
   }
-  //< stmt-if
+//< stmt-if
 //> stmt-print
   static class Print extends Stmt {
     Print(Expr expression) {
@@ -115,7 +114,7 @@ abstract class Stmt {
 
     final Expr expression;
   }
-  //< stmt-print
+//< stmt-print
 //> stmt-return
   static class Return extends Stmt {
     Return(Token keyword, Expr value) {
@@ -131,7 +130,7 @@ abstract class Stmt {
     final Token keyword;
     final Expr value;
   }
-  //< stmt-return
+//< stmt-return
 //> stmt-var
   static class Var extends Stmt {
     Var(Token name, Expr initializer) {
@@ -147,7 +146,7 @@ abstract class Stmt {
     final Token name;
     final Expr initializer;
   }
-  //< stmt-var
+//< stmt-var
 //> stmt-while
   static class While extends Stmt {
     While(Expr condition, Stmt body) {
@@ -165,12 +164,6 @@ abstract class Stmt {
   }
 //< stmt-while
 
-  static class Break extends Stmt {
-    @Override
-    <R> R accept(Visitor<R> visitor) {
-      return visitor.visitBreakStmt(this);
-    }
-  }
   abstract <R> R accept(Visitor<R> visitor);
 }
 //< Appendix II stmt

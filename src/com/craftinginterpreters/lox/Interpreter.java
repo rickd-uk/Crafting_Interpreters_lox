@@ -1,6 +1,7 @@
 package com.craftinginterpreters.lox;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
@@ -216,10 +217,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visitBreakStmt(Stmt.Break stmt) {
-        return null;
-    }
+//    @Override
+//    public Void visitBreakStmt(Stmt.Break stmt) {
+//        return null;
+//    }
 
 
     @Override
@@ -283,7 +284,28 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitCallExpr(Expr.Call expr) {
-        return null;
+        Object callee = evaluate(expr.callee);
+
+        List<Object> arguments = new ArrayList<>();
+        for (Expr argument : expr.arguments) {
+            arguments.add(evaluate(argument));
+        }
+        //  The runtime representation of a Lox string is a
+        //Java string, so when we cast that to LoxCallable, the JVM will throw a
+        //ClassCastException. We don’t want our interpreter to vomit out some nasty
+        //Java stack trace and die. Instead, we need to check the type ourselves first.
+        if (!(callee instanceof LoxCallable)) {
+            throw new RuntimeError(expr.paren, "Can only call functions & classes.");
+        }
+
+        LoxCallable function = (LoxCallable) callee;
+        if (arguments.size() != function.arity()) {
+            throw new RuntimeError(expr.paren, "Expected " +
+                    function.arity() + " arguments but got " +
+                    arguments.size() + ".");
+        }
+        return function.call(this, arguments);
+
     }
 
     @Override

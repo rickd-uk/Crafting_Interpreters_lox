@@ -14,7 +14,7 @@ public class GenerateAst {
         }
         String outputDir = args[0];
 //> call-define-ast
-        defineAst(outputDir, "Expr", Arrays.asList(
+        defineAst(outputDir, "Expr1", Arrays.asList(
 //> Statements and State assign-expr
                 "Assign   : Token name, Expr value",
 //< Statements and State assign-expr

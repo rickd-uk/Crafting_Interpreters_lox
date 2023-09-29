@@ -242,7 +242,51 @@ public class Parser {
             Expr right = unary();
             return new Expr.Unary(operator, right);
         }
-        return primary();
+        return call();
+    }
+
+    private Expr finishCall(Expr callee) {
+        List<Expr> arguments = new ArrayList<>();
+        // We check for that case first by
+        //seeing if the next token is ) . If it is, we don’t try to parse any arguments.
+        if (!check(RIGHT_PAREN)) {
+            do {
+                // Otherwise, we parse an expression, then look for a comma indicating that there
+                // is another argument after that. We keep doing that as long as we find commas
+                // after each expression.
+                if (arguments.size() >= 255) {
+                    //  It doesn’t throw the error. Throwing is how we kick into panic mode which
+                    //  is what we want if the parser is in a confused state and doesn’t know where it is
+                    //  in the grammar anymore. But here, the parser is still in a perfectly valid state—
+                    //  it just found too many arguments. So it reports the error and keeps on keepin’
+                    //  on.
+                    error(peek(), "Can't have more than 255 arguments.");
+                }
+                arguments.add(expression());
+            } while (match(COMMA));
+        }
+        // When we don’t find a comma, then the argument list
+        // must be done and we consume the expected closing parenthesis.
+        Token paren = consume(RIGHT_PAREN,
+                "Expect ')' after args");
+        return new Expr.Call(callee, paren, arguments);
+    }
+
+    private Expr call() {
+        // First, we parse a primary expression, the “left operand” to the call.
+        Expr expr = primary();
+
+        //Each time we see a ( , we call finishCall() to parse the call expression using the
+        //previously parsed expression as the callee. The returned expression becomes the
+        //new expr and we loop to see if the result is itself called.
+        while (true) {
+            if (match(LEFT_PAREN)) {
+                expr = finishCall(expr);
+            } else {
+                break;
+            }
+        }
+        return expr;
     }
 
     private Expr primary() {
