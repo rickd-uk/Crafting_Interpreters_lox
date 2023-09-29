@@ -27,7 +27,16 @@ public class LoxFunction implements LoxCallable {
         for (int i = 0; i < declaration.params.size(); i++) {
             environment.define(declaration.params.get(i).lexeme, arguments.get(i));
         }
-        interpreter.executeBlock(declaration.body, environment);
+        // We wrap the call to executeBlock() in a try-catch block. When it catches a
+        // return exception, it pulls out the value and makes that the return value from
+        // call() . If it never catches one of these exceptions, it means the function
+        // reached the end of its body without hitting a return statement. In that case, it
+        // implicitly returns nil .
+        try {
+            interpreter.executeBlock(declaration.body, environment);
+        } catch (Return returnValue) {
+            return returnValue.value;
+        }
         return null;
     }
 }
