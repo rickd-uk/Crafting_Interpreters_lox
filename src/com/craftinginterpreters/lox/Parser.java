@@ -82,6 +82,7 @@ public class Parser {
         if (match(IF)) return ifStatement();
         if (match(PRINT)) return printStatement();
         if (match(WHILE)) return whileStatement();
+        // Like other statements, we detect the beginning of a block by its leading token—in this case the {
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
 
         return expressionStatement();
@@ -112,6 +113,10 @@ public class Parser {
         consume(RIGHT_PAREN, "Expect ')' after for clauses.");
 
         Stmt body = statement();
+
+        if (match(BREAK)) {
+            return null;
+        }
 
         if (increment != null) {
             body = new Stmt.Block (
@@ -182,6 +187,8 @@ public class Parser {
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
             statements.add(declaration());
         }
+        // Note that the loop also has an explicit check for isAtEnd() . We have to be careful to avoid infinite
+        //loops, even when parsing invalid code. If the user forgets a closing '}' , the parser needs to not get stuck.
         consume(RIGHT_BRACE, "Expect '}' after block");
         return statements;
     }
